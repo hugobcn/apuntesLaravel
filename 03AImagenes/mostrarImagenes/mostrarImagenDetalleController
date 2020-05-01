@@ -1,0 +1,37 @@
+ /routes/
+Route::post('/user/update', 'UserController@update')->name('user.update');
+
+
+/app/http/controllers/
+
+<?php
+
+namespace App\Http\Controllers;
+
+
+//utilizar modelo
+use App\Image;
+use App\Comment;
+use App\Like;
+//guardarImagen
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+//para getName
+use Illuminate\Http\Response;
+
+class UserController extends Controller
+{
+    
+    
+  //mostrar detalles foto lista
+    public function detail($id) {
+        //metodo find saca el objeto
+        $image = Image::find($id);
+        //var_dump($image);
+        //die();
+        return view('image.detail', ['image' => $image]);
+    }
+ 	
+
+}
+

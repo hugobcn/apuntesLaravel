@@ -1,0 +1,76 @@
+ Inicio: pagina:
+{{--llamar plantilla--}}
+@extends('layouts.app')
+{{--dentro del contenedor--}}
+@section('content')
+
+route/web
+
+Route::get('/image/{id}', 'ImageController@detail')->name('image.detail');
+
+
+-------mostrar detalle foreach---
+
+       @foreach($images  as $image)
+            <!-- <div class="card pub_image">  -->
+            <div class="card  pub_image">
+                <div class="card-header ">
+                    @if($image->user->image)
+                    <div class="container-avatar2">
+                        <img  src="{{route('user.file',['filename'=> $image->user->image])}}" class="avatar2"/> 
+                    </div>
+                    @endif
+                    <div class ="data-user">
+                        <a href="{{route('profile',['id'=>$image->user->id])}}">
+                            {{$image->user->name.' '.$image->user->surname.' | '.$image->user->image }}
+                            <span class=" nickname">
+                                {{' | @ '.$image->user->nick}}
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+                   
+
+                    <div class='description'>                        
+                        <span class='nickname'>{{'@'.$image->user->nick}}</span>
+                        <span class="nickname date">{{' | '.\FormatTime::LongTimeFilter($image->created_at)}}</span>
+                        <p>{{$image->description}}</
+                    </div>
+@endforeach
+
+
+--------------------------imagen individual-----------------------------
+
+
+ <div class="card  pub_image pub_image_detail">
+                <div class="card-header ">
+                    @if($image->user->image)
+                    <div class="container-avatar2">
+                        <img  src="{{route('user.file',['filename'=> $image->user->image])}}" class="avatar2"/> 
+                    </div>
+                    @endif
+                    <div class ="data-user">
+                        {{$image->user->name.' '.$image->user->surname.' | '.$image->user->image }}
+                        <span class=" nickname">
+                            {{' | @ '.$image->user->nick}}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+                    <div class='image-container'>
+                        <img src ='{{route('image.file',['filename'=> $image->image_path])}}'/>
+                    </div>
+
+
+                    <div class='description'>                        
+                        <span class='nickname'>{{'@'.$image->user->nick}}</span>
+                        <span class="nickname date">{{' | '.\FormatTime::LongTimeFilter($image->created_at)}}</span>
+                        <p>{{$image->description}}</
+                    </div>
+

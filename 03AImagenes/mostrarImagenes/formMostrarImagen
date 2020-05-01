@@ -1,0 +1,52 @@
+ Inicio: pagina:
+{{--llamar plantilla--}}
+@extends('layouts.app')
+{{--dentro del contenedor--}}
+@section('content')
+
+route/web
+
+Route::get('/image/file/{filename}', 'ImageController@getImage')->name('image.file');
+Route::get('/user/file/{filename}', 'UserController@getImage')->name('user.file');
+Route::get('/image/{id}', 'ImageController@detail')->name('image.detail');
+
+
+
+-------mostrar una imagen----
+
+@if(Auth::user()->image)
+  <div class="container-avatar2">
+      <!--<img src="{{url('user/avatar/'.Auth::user()->image)}}"></img>-->
+    <img  src="{{route('user.avatar',['filename'=>Auth::user()->image])}}" class="avatar2"/>   
+  </div>
+  @endif
+
+---Mostrar varias-----
+
+ @foreach($images  as $image)
+            <!-- <div class="card pub_image">  -->
+            <div class="card  pub_image">
+                <div class="card-header ">
+                    @if($image->user->image)
+                    <div class="container-avatar2">
+                        <img  src="{{route('user.file',['filename'=> $image->user->image])}}" class="avatar2"/> 
+                    </div>
+                    @endif
+                    <div class ="data-user">
+                        <a href="{{route('profile',['id'=>$image->user->id])}}">
+                            {{$image->user->name.' '.$image->user->surname.' | '.$image->user->image }}
+                            <span class=" nickname">
+                                {{' | @ '.$image->user->nick}}
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+@endforeach
+-------------------------------
+
+
+ {{-- crear o llamar al paginador --}}
+        <!-- clearfix es para que no monte nada o hacia arriba- limpiar flotados -->
+        <div class="clearfix"></div>
+        {{$images->links()}}

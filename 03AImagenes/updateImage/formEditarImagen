@@ -1,0 +1,15 @@
+ Inicio: pagina:
+{{--llamar plantilla--}}
+@extends('layouts.app')
+{{--dentro del contenedor--}}
+@section('content')
+
+route/web
+Route::get('/imagen/editar/{id}', 'ImageController@edit')->name('image.edit');
+
+-------
+
+
+@if(Auth::user() &&  Auth::user()->id == $image->user->id)
+                    <div class="action">
+                        <a href="{{ route('image.edit', ['id' => $image->id]) }}" class="btn btn-sm btn-primary">Actualizar</a>             

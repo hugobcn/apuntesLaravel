@@ -1,0 +1,4 @@
+/storage/app/  (crear carpeta dentro users e images)
+sudo chmod -R 777   xxxxxxx   (permisos carpeta)
+
+

@@ -1,0 +1,52 @@
+ /routes/
+Route::post('/user/update', 'UserController@update')->name('user.update');
+
+
+/app/http/controllers/
+
+<?php
+
+namespace App\Http\Controllers;
+
+
+//utilizar modelo
+use App\Image;
+use App\Comment;
+use App\Like;
+//guardarImagen
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+//para getName
+use Illuminate\Http\Response;
+
+class UserController extends Controller
+{
+    
+    
+   //mostrar imagen 
+   public function getImage($filename) {
+        $file = Storage::disk('images')->get($filename);
+        return new Response($file, 200);
+    }
+	
+
+   public function index()
+    {
+        //extraer todas las imagenes
+        //$images = Image::orderBy('id','desc')->get();
+        
+        //extraer datos y paginar los archivos
+        //http://twitter-laravel.com/home?page=2
+          $images = Image::orderBy('id','desc')->paginate(4);                                        
+        
+        //$file = Storage::disk('users')->get();
+        //var_dump($images_users);
+        //die();
+        
+        
+        return view('home',['images'=>$images]);
+    }
+ 	
+
+}
+
