@@ -1,0 +1,33 @@
+Route::post('/comment/save', 'CommentController@save')->name('comment.save');
+
+
+
+
+  <div class="comments">
+                        <a href="{{route('image.detail',['id'=>$image->id])}}" class="btn btn-sm btn-warning btn-comentarios">Comentarios ({{count($image->comments)}})</a>
+                        <!--contar cometarios-->
+
+                    </div>
+
+
+
+ <div class="comments">
+                        <h2>Comentarios ({{count($image->comments)}})</h2>
+                        <hr>
+
+                        <form method="POST" action="{{ route('comment.save') }}">
+                            @csrf
+                            <input type="hidden" name="image_id" value="{{$image->id}}" />
+                            <p>
+                                <textarea class="form-control" name="content" required></textarea>
+                                @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+
+                                    <li>{{ $error }}</li>
+
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif

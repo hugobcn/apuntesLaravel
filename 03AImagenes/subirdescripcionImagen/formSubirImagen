@@ -1,0 +1,47 @@
+ Inicio: pagina:
+{{--llamar plantilla--}}
+@extends('layouts.app')
+{{--dentro del contenedor--}}
+@section('content')
+
+route/web
+
+Route::post('/user/update', 'UserController@update')->name('user.update');
+
+---------------------------
+
+Route::post('/user/update', 'UserController@update')->name('user.update');
+
+-------
+
+
+<form method="POST" action="{{ route('user.update') }}" enctype="multipart/form-data">
+                        @csrf
+
+
+
+ <!--inicio subir imagen-->
+                         <div class="form-group row">
+                            <label for="image_path" class="col-md-4 col-form-label text-md-right">{{ __('Avatar') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="image_path" type="file"  name="image_path" />
+
+                               
+                            </div>
+                        </div>
+                          <!--final subir imagen-->
+                        
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar cambios
+                                </button>
+                            </div>
+                        </div>
+        
+        @endif
+        
+        <div class="col-md-8">
+            <div class="card">

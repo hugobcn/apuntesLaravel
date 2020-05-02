@@ -1,0 +1,13 @@
+Route::get('/perfil/{id}', 'UserController@profile')->name('profile');
+Route::get('/gente/{search?}', 'UserController@index')->name('user.index');
+
+app.blabe.php- head:
+
+<script src="{{ asset('js/main.js') }}" defer></script>
+
+
+app.blade.pphp:
+
+<li class="nav-item">
+                            <a  class="nav-link" href="{{ route('user.index') }}">Gente</a>
+                        </li>

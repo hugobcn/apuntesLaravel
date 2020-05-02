@@ -1,0 +1,190 @@
+//utilizar modelo
+use App\Image;
+use App\Comment;
+use App\Like; 
+
+
+-----------------EXTRAER DATOS-------------
+
+//conseguir objeto del comentario
+        //find conseguir objeto de ese registro
+        $comment = Comment::find($id);
+
+//extraer datos y paginar los archivos
+        //http://twitter-laravel.com/home?page=2
+          $images = Image::orderBy('id','desc')->paginate(4); 
+
+
+//obtener imagenes & associados
+        $image = Image::find($id);
+        $comments = Comment::where('image_id', $id)->get();
+        $likes = Like::where('image_id', $id)->get();
+
+$likes = Like::where('user_id', $user->id)
+                        ->orderBy('id', 'desc')
+                        ->paginate(5);
+
+ //condicion  no duplicar like
+        $isset_like = Like::where('user_id',$user->id)
+                            ->where('image_id',$image_id)
+                            ->count();
+                            //->get(); sacar daros objeto
+
+
+//condicion existe like
+        $like = Like::where('user_id',$user->id)
+                            ->where('image_id',$image_id)
+                            ->first();  //coger primer metodo
+
+
+//extraer todos los usuarios Y BUSCAR
+        //$users =User::all();
+        //extraer todos los usuarios con orden y paginador
+         
+        if (!empty($search)) {
+            //where( nick LIKE %search% )
+            $users = User::where('nick','LIKE','%'.$search.'%')
+                    ->orWhere('name','LIKE','%'.$search.'%')
+                    ->orderBy('id','desc')
+                    ->paginate(5);
+        } else {
+             $users = User::orderBy('id','desc')->paginate(5);
+        }
+
+
+-----------JSON------
+
+
+
+//devolver Json
+        return response()->json([
+            'like'=>$like,
+             'message'=> 'Ok,dislike hecho'
+        ]);
+            
+        }else{
+             return response()->json([
+            'message'=>'KO, dislike inexistente'
+        ]);
+        }
+
+-------------------VALIDADOR------
+
+ //validacion
+        $validate = $this->validate($request, [
+            'description' => 'required',
+            'image_path' => 'required|mimes:jpg,jpeg,png,gif|max:512'
+        ]);
+
+
+//validar datos
+        $validate = $this->validate($request,[
+            'image_id' => 'integer|required|',
+            'content'=> 'string|required',
+        ]);
+
+
+//validacion formulario
+        $validate = $this->validate($request,[
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'nick' => 'required|string|max:255|unique:users,nick,'.$id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$id        
+        ]);
+
+-------RECOGER DATOS-----
+
+
+ //recoger datos
+        //\Auth::user(); recoger  dato usuario
+        $user = \Auth::user();
+        $image_id = $request->input('image_id');
+        $content = $request->input('content');
+        
+        //cargar en BBDD
+        $comment = new Comment();
+        //Asignar nuevos valores a asignar
+        $comment->user_id = $user->id;
+        $comment->image_id = $image_id;
+        $comment->content = $content;
+        
+        //guardar datos en BBDD
+        $comment -> save();
+
+
+ // Recoger datos
+        $image_id = $request->input('image_id');
+        $image_path = $request->file('image_path');
+        $description = $request->input('description');
+
+        // Conseguir objeto image
+        $image = Image::find($image_id);
+        $image->description = $description;
+
+        // Subir fichero
+        if ($image_path) {
+            $image_path_name = time() . $image_path->getClientOriginalName();
+            Storage::disk('images')->put($image_path_name, File::get($image_path));
+            $image->image_path = $image_path_name;
+        }
+
+        
+        // Actualizar registro
+		$image->update();
+
+
+//recoger datos del formulario       
+        $name = $request->input('name');
+        $surname = $request-> input('surname');
+        $nick = $request-> input('nick');
+        $email = $request-> input('email');
+        
+        
+        //asignar nuevos valores  al objeto del usuario
+        $user -> name =$name;
+        $user -> surname = $surname;
+        $user -> nick = $nick;
+        $user -> email = $email;
+        
+        //subirImagen
+       $image_path = $request-> file('image_path');
+       if($image_path){
+           //Poner nombre: time() imagen unica  y getClientOriginalName() obtener nombre
+           $image_path_name = time().$image_path->getClientOriginalName();
+           
+           //Guardar imagen en (storage/app/users)
+           Storage::disk('users')->put($image_path_name,File::get($image_path));
+           
+           //seteo el nombre  de la imagen  en el objeto
+           $user->image = $image_path_name;           
+       }
+        
+        
+        //ejecutar consulta y cambios en BBDD
+        $user->update();
+
+-----ROUTES REDIRECT------
+
+
+return redirect()-> route('image.detail',['id'=>$image_id])
+                         -> with(['message'=>'OK, comentario publicado']);
+
+return redirect()-> route('image.detail',['id'=>$comment->image->id])
+                         -> with(['message'=>'OK, comentario borrado']);
+
+return view('auth.login');
+return view('home',['images'=>$images]);
+
+return redirect()->route('home')->with(['message' => 'OK, foto subida']);
+
+---ROUTES----
+
+Route::post('/user/update', 'UserController@update')->name('user.update');
+Route::get('/configuracion', 'UserController@config')->name('config');
+Route::get('/user/file/{filename}', 'UserController@getImage')->name('user.file');
+Route::get('/image/{id}', 'ImageController@detail')->name('image.detail');
+
+
+
+
+

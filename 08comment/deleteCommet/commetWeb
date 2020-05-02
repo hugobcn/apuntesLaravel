@@ -1,0 +1,9 @@
+Route::get('/comment/delete/{id}', 'CommentController@delete')->name('comment.delete');
+
+ @if(Auth::check() && ($comment->user_id == Auth::user()->id || $comment->image->user_id == Auth::user()->id))
+                                <a href="{{route('comment.delete',['id'=>$comment->id])}}" class="btn btn-smn btn-danger">
+                                    Eliminar
+                                </a>
+                                @endif
+
+

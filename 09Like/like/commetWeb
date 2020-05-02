@@ -1,0 +1,18 @@
+Route::post('/comment/save', 'CommentController@save')->name('comment.save');
+
+app.blabe.php- head:
+
+<script src="{{ asset('js/main.js') }}" defer></script>
+
+
+inside conatiner:
+
+ @if($user_like)
+                         <!-- data-id="{{$image->id}}"  para gestionar  mediante ajax-->
+                         <img  src="{{asset('img/heart-red.png')}}" data-id="{{$image->id}}"  class="btn-dislike"/>
+                        @else
+                       <img  src="{{asset('img/heart-black.png')}}" data-id="{{$image->id}}"  class="btn-like"/>
+                        @endif
+                        <span class="number_likes">{{count($image->likes)}}</span> 
+                    </div>
+  
